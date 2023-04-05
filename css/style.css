@@ -8,7 +8,7 @@ h1,h2,h3 {
 	text-align: center;
 }
 .lead {
-	font-weight:light;
+	font-weight:normal;
 }
 .navbar-inverse{
 	opacity: 0.8;
