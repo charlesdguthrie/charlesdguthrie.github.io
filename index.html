@@ -1,444 +1,495 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
 
-    <title>Charlie Guthrie</title>
+  <title>Charlie Guthrie</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- FontAwesome -->
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="css/style.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
 
-    <!-- Google Analytics -->
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-52223823-1', 'charlieguthrie.com');
-      ga('send', 'pageview');
+    ga('create', 'UA-52223823-1', 'charlieguthrie.com');
+    ga('send', 'pageview');
 
-    </script>
+  </script>
 
-    <!-- Clock links -->
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans">
+  <!-- Clock links -->
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans">
 
-    <!-- ****** faviconit.com favicons ****** -->
-    <link rel="shortcut icon" href="favicons/favicon.ico">
-    <link rel="icon" sizes="16x16 32x32 64x64" href="favicons/favicon.ico">
-    <link rel="icon" type="image/png" sizes="196x196" href="favicons/favicon-192.png">
-    <link rel="icon" type="image/png" sizes="160x160" href="favicons/favicon-160.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="favicons/favicon-96.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="favicons/favicon-64.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16.png">
-    <link rel="apple-touch-icon" href="favicons/favicon-57.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="favicons/favicon-114.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="favicons/favicon-72.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="favicons/favicon-144.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="favicons/favicon-60.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="favicons/favicon-120.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="favicons/favicon-76.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="favicons/favicon-152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicons/favicon-180.png">
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="msapplication-TileImage" content="favicons/favicon-144.png">
-    <meta name="msapplication-config" content="/browserconfig.xml">
-    <!-- ****** faviconit.com favicons ****** -->
+  <!-- ****** faviconit.com favicons ****** -->
+  <link rel="shortcut icon" href="favicons/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="favicons/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="favicons/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="160x160" href="favicons/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicons/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicons/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16.png">
+  <link rel="apple-touch-icon" href="favicons/favicon-57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="favicons/favicon-114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="favicons/favicon-72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="favicons/favicon-144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="favicons/favicon-60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="favicons/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="favicons/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="favicons/favicon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicons/favicon-180.png">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="favicons/favicon-144.png">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <!-- ****** faviconit.com favicons ****** -->
 
-  </head>
+</head>
 
-  <body>
+<body>
 
-  <!-- navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Charlie Guthrie</a>
+<!-- navbar -->
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Charlie Guthrie</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="#">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#talks">Talks</a></li>
+        <li><a href="#art">Art</a></li>
+        <li><a href="files/guthrie_resume.pdf">Resume</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</div>
+
+
+<div class="container">
+
+  <!-- Home -->
+  <div class="section">
+    <a class="anchor" id="home"></a>
+    <div class="row centered">
+      <img src="img/charlie bitmoji.png" style="width:75%; max-width:400px">
+      <h1>Charlie Guthrie</h1>
+        <p class="lead">Using data to answer questions, tell stories, and solve problems. </p>
+      <i class="fa fa-chevron-down fa-4x"></i>
+    </div>
+  </div><!-- /.section-->
+
+  <!-- About -->
+  <div class="section">
+    <a class="anchor" id="about"></a>
+    <div class="row">
+      <div class="col-md-12">
+        <h1> About Me </h1>
+        <p class="lead">I've developed a broad skill set in my 10+ years as a data scientist.  At the New York Times, I was a data visualization engineer, doing frontend work and building dashboards.  At NYU, I got an MS in Data Science with heavy emphasis on machine learning and AI.  Following that, at Facebook I learned how a top-tier tech company operates and leaned into product analysis - embedding with a product team, designing and moving metrics to help achieve team goals.  I continued product work at Udemy, designing our customer onboarding funnel, producing a company-wide learning engagement KPI, leading the Experiment Review Council and upgrading our experimentation system. Most recently at Coursera, I worked with marketing teams, developing an LTV model and building out data pipelines to power email campaigns.  
+        </p>
+      </div>
+    </div>
+  </div><!-- /.section-->
+
+
+  <!-- Projects -->
+  <div class="section">
+    <a class="anchor" id="projects"></a>
+    <div class="row">
+      <h1> Projects </h1>
+    </div>
+
+    <!-- Machine Learning -->
+    <div class="row">
+      <h2> Machine Learning </h2>
+    </div>
+
+    <div class="row">
+
+      <!-- Bookworm -->
+      <div class="col-md-6">
+        <div class="project">
+          <a href="goldfrank.herokuapp.com">
+            <h3> Bookworm </h3>
+            <div class="imgBox">
+              <img src="img/bookworm.png">
+            </div>
+          </a>
+          <p>Bookworm is a chatbot that answers questions based on a given body of text.  It augments user prompts with relevant passages from the text so that responses from GPT-3 are more trustworthy and include citations.  This demo uses the Bible as source text. 
+          </p>
         </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#talks">Talks</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="files/guthrie_resume.pdf">Resume</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
+      </div>
+
+      <!-- Retail Classifier -->
+      <div class="col-md-6">
+        <div class="project">
+          <a href="files/multimodal-multitask-classification.pdf">
+            <h3> Classification Using Neural Networks </h3>
+            <div class="imgBox">
+              <img src="img/spring diagram.png">
+            </div>
+          </a>
+          <p> With Lucy Wang and advisors Kelvin Xu and Kyunghyun Cho: we used image recognition, natural language processing and neural networks to classify fashion products and accessories into three tiers of categories with very high (up to 99%) accuracy. </p>
+        </div>
       </div>
     </div>
 
+    <div class="row">
 
-    <div class="container">
-
-      <div class="section">
-        <a class="anchor" id="about"></a>
-        <div class="row centered">
-          <img src="img/charlie bitmoji.png" style="width:75%; max-width:400px">
-          <h1>Charlie Guthrie</h1>
-            <p class="lead">Using data to answer questions, tell stories, and solve problems. </p>
-          <i class="fa fa-chevron-down fa-4x"></i>
+      <!-- Physics -->
+      <div class="col-md-6">
+        <div class="project">
+          <a href="files/Generative Models for HEP Poster.pdf">
+            <h3> Generative Models for Particle Physics </h3>
+            <div class="imgBox">
+              <img src="img/gan flow chart.jpg">
+            </div>
+          </a>
+          <p>Two parts: image corresponds to part 1. With Alex Pine, Israel Malkin and advisor Kyle Cranmer. We experimented with more efficient methods for simulating International Linear Collider events. We simulated calorimeter readings using a conditional GAN (<a href="files/Generative Models for HEP Paper 1.pdf">first paper</a>), and then using a Wasserstein GAN (<a href="files/Generative Models for HEP Paper 2.pdf">second paper</a>). </p>
         </div>
-      </div><!-- /.section-->
+      </div>
 
-
-
-      <div class="section">
-        <a class="anchor" id="talks"></a>
-        <div class="row">
-          <h1> Talks </h1>
+      <!-- Appeals -->
+      <div class="col-md-6">
+        <div class="project">
+          <a href="files/AppealsPoster.pdf">
+            <h3> Classifying Appeals Court Documents </h3>
+            <div class="imgBox">
+              <img src="img/appealsHeatmap.png">
+            </div>
+          </a>
+          <p> <a href="files/AppealsReport.pdf">Full paper here</a>. With Alex Pine and advisors Daniel Chen, David Rosenberg, and Kush Varshney: we used natural language processing and machine learning techniques to classify written appeals court decisions as liberal or conservative. </p>
         </div>
+      </div>
 
-        <div class="row">
+    </div> 
 
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://www.tandfonline.com/doi/full/10.1080/10401334.2020.1754216">
-                <h3>Evaluating Online Course Materials</h3>
-                <div class="imgBox">
-                  <img src="img/medu_thumb.png">
-                </div>
-              </a>
-              <p> Northeastern Group on Education Affairs (NEGEA), on 2017-05-05: Evaluating the impact of course material engagement on assessment performance, on the MedU online course platform. (<a href="files/NEGEA_AS_PRESENTED_2017-05-05.pdf">PDF</a>, <a href="files/NEGEA_AS_PRESENTED_2017-05-05.pptx">PPT</a>). Published to journal <em>Teaching and Learning in Medicine</em> (<a href="https://www.tandfonline.com/doi/full/10.1080/10401334.2020.1754216">abstract</a>). </p>
+    <div class="row">
+
+      <div class="col-md-6">
+        <div class="project">
+          <a href="files/DonorsChooseReport.pdf">
+            <h3> Donors Choose Prototype Report </h3>
+            <div class="imgBox">
+              <img src="img/DonorsChooseWriteUp.png">
             </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://slides.com/charlesguthrie/democratizing-data">
-                <h3>Democratizing Data</h3>
-                <div class="imgBox">
-                  <img src="img/democratizing_data_thumb.png">
-                </div>
-              </a>
-              <p> Innovation Enterprises Data Visualization Summit, San Jose, on 2015-04-28: A talk about making the NYTimes more data-driven by expanding access to internal data through simple visualization tools. </p>
-            </div>
-          </div>
+          </a>
+          <p> An exploratory analysis and prototype for automatically screening <a href="https://www.donorschoose.org">DonorsChoose.org</a> projects using machine learning techniques. See also the <a href="files/DonorsChoosePresentation.pdf">presentation</a>. </p>
         </div>
-
-        <div class="row">
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="files/DonorsChoosePresentation.pdf">
-                <h3> Auto-Screening for Donors Choose</h3>
-                <div class="imgBox">
-                  <img src="img/DonorsChoosePreso.png">
-                </div>
-              </a>
-              <p> NYU Introduction to Data Science, New York City, on 2015-12-17: An exploratory analysis and prototype for automatically screening <a href="https://www.donorschoose.org">DonorsChoose.org</a> projects using machine learning techniques. See also the <a href="files/DonorsChooseReport.pdf">full report</a>. </p>
+      </div>
+      
+      <!-- Individualized Student Reports -->
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://charlesdguthrie.github.io/yleana/reports">
+            <h3>Individualized Student Reports</h3>
+            <div class="imgBox">
+              <img src="img/yleanaChart.png">
             </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="files/DashboardsWithD3.pdf">
-                <h3>Dashboards with D3</h3>
-                <div class="imgBox">
-                  <img src="img/Dashboards with D3.png">
-                </div>
-              </a>
-              <p> NYC D3.js Meetup, New York City, 2014-04-28: Why and how to use D3 to make live-updating dashboards. See also <a href="https://www.icloud.com/keynote/000llbg0N6k0yI2cAmEOom6qQ#Dashboards_with_D3"> interactive keynote version</a></p>
-            </div>
-          </div>
-
+          </a>
+          <p> Individualized student progress reports for <a href="https://yleana.org/">Yleana Leadership Academy</a>, a nonprofit test prep camp. Reports were provided weekly to teachers so they knew what areas to focus on for each student, so they could provide individualized problem sets, and to group together students with similar needs. </p>
         </div>
+      </div>
+    
+    </div>
 
-      </div><!-- /.section-->
+  </div><!-- /.section-->
 
+  <!-- Data Visualization -->
+  <div class="section">
+    <a class="anchor" id="vis"></a>
+    <div class="row">
+      <h1> Data Visualization </h1>
+    </div>
 
-      <div class="section">
-        <a class="anchor" id="projects"></a>
-        <div class="row">
-          <h1> Collaborative Projects </h1>
+    <div class="row">
+
+      <div class="col-md-6">
+        <div class="project">
+          <a href="nyt.html">
+            <h3>NYTimes Dashboards</h3>
+            <div class="imgBox">
+              <img src="img/dash/multi-chart-thumb.png">
+            </div>
+          </a>
+          <p> As a data visualization engineer for the New York Times, I worked with a team of 4-6 to develop an interactive visual dashboard for business intelligence analytics.  By the time I left, we had built over 100 up-to-date charts for 18 teams throughout the company. </p>
         </div>
+      </div>
 
-        <div class="row">
 
-          <div class="col-md-6">
-            <div class="project">
-              <a href="files/Generative Models for HEP Poster.pdf">
-                <h3> Generative Models for Particle Physics </h3>
-                <div class="imgBox">
-                  <img src="img/gan flow chart.jpg">
-                </div>
-              </a>
-              <p>Two parts: image corresponds to part 1. With Alex Pine, Israel Malkin and advisor Kyle Cranmer. We experimented with more efficient methods for simulating International Linear Collider events. We simulated calorimeter readings using a conditional GAN (<a href="files/Generative Models for HEP Paper 1.pdf">first paper</a>), and then using a Wasserstein GAN (<a href="files/Generative Models for HEP Paper 2.pdf">second paper</a>). </p>
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://charlesdguthrie.github.io/d3/soda_map/">
+            <h3>Soda Map</h3>
+            <div class="imgBox">
+              <img src="img/sodaMap.png">
             </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="files/multimodal-multitask-classification.pdf">
-                <h3> Classification Using Neural Networks </h3>
-                <div class="imgBox">
-                  <img src="img/spring diagram.png">
-                </div>
-              </a>
-              <p> With Lucy Wang and advisors Kelvin Xu and Kyunghyun Cho: we used image recognition, natural language processing and neural networks to classify fashion products and accessories into three tiers of categories with very high (up to 99%) accuracy. </p>
-            </div>
-          </div>
+          </a>
+          <p> Pop, Soda or Coke?  An interactive choropleth map demonstrating regional differences in what we call soft drinks. </p>
         </div>
+      </div>
+      
+    </div>
 
-        <div class="row">
-          <div class="col-md-6">
-            <div class="project">
-              <a href="files/AppealsPoster.pdf">
-                <h3> Classifying Appeals Court Documents </h3>
-                <div class="imgBox">
-                  <img src="img/appealsHeatmap.png">
-                </div>
-              </a>
-              <p> <a href="files/AppealsReport.pdf">Full paper here</a>. With Alex Pine and advisors Daniel Chen, David Rosenberg, and Kush Varshney: we used natural language processing and machine learning techniques to classify written appeals court decisions as liberal or conservative. </p>
-            </div>
-          </div>
+    <div class="row">
 
-          <div class="col-md-6">
-            <div class="project">
-              <a href="nyt.html">
-                <h3>NYTimes Dashboards</h3>
-                <div class="imgBox">
-                  <img src="img/dash/multi-chart-thumb.png">
-                </div>
-              </a>
-              <p> As a data visualization engineer for the New York Times, I worked with a team of 4-6 to develop an interactive visual dashboard for business intelligence analytics.  By the time I left, we had built over 100 up-to-date charts for 18 teams throughout the company. </p>
+      <div class="col-md-6">
+        <div class="project">
+          <a href="img/Group%20G%20Possibilities.png">
+            <h3>World Cup 2014: Group G</h3>
+            <div class="imgBox">
+              <img src="img/Group G Possibilities.png">
             </div>
-          </div>
+          </a>
+          <p> I was stressing out about whether team USA would make it out of Group G going into their game vs. Germany, so I made a chart. I posted it to a couple of social media sites and it generated 400,000 views in 24 hours.  </p>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col-md-6">
-            <div class="project">
-              <a href="files/DonorsChooseReport.pdf">
-                <h3> Donors Choose Prototype Report </h3>
-                <div class="imgBox">
-                  <img src="img/DonorsChooseWriteUp.png">
-                </div>
-              </a>
-              <p> An exploratory analysis and prototype for automatically screening <a href="https://www.donorschoose.org">DonorsChoose.org</a> projects using machine learning techniques. See also the <a href="files/DonorsChoosePresentation.pdf">presentation</a>. </p>
+      <div class="col-md-6" >
+        <div class="project">
+          <a href="https://charlesdguthrie.github.io/cityHall/">
+            <h3> City Hall </h3>
+            <div class="imgBox">
+              <img src="img/cityHall.png">
             </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://nickmcclellan.github.io/dcaction/">
-                <h3> DC Action Project </h3>
-                <div class="imgBox">
-                  <img src="img/dcaction.png">
-                </div>
-              </a>
-              <p> An interactive map of statistics displaying where resources and well-being vary in D.C.  A volunteer collaboration with Nick McClellan et al through <a href="https://www.datakind.org/">Datakind</a> </p>
-            </div>
-          </div>
+          </a>
+          <p> If American cities had the same geographic footprint, which would have the biggest population? </p>
         </div>
+      </div>
 
-      </div><!-- /.section-->
+    </div>
 
+    <div class="row">
 
-      <div class="section">
-        <a class="anchor" id="solo"></a>
-        <div class="row">
-          <h1> Solo Projects </h1>
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://bl.ocks.org/charlesdguthrie/8950493">
+            <h3> 3D Parallax Effect </h3>
+            <div class="imgBox">
+              <img src="img/parallax.png">
+            </div>
+          </a>
+          <p> A simple example demonstrating how to achieve 3-D effects using parallax in D3 </p>
         </div>
+      </div>
 
-        <div class="row">
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://charlesdguthrie.github.io/d3/soda_map/">
-                <h3>Soda Map</h3>
-                <div class="imgBox">
-                  <img src="img/sodaMap.png">
-                </div>
-              </a>
-              <p> Pop, Soda or Coke?  An interactive choropleth map demonstrating regional differences in what we call soft drinks. </p>
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://charlieguthrie.com/APDA_Clock/">
+            <h3> APDA Parkinson's Infographic </h3>
+            <div class="imgBox">
+              <div class="chart" style="width:440px; margin-top:-12px;">
+              </div>
             </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://charlesdguthrie.github.io/yleana/reports">
-                <h3>Individualized Student Reports</h3>
-                <div class="imgBox">
-                  <img src="img/yleanaChart.png">
-                </div>
-              </a>
-              <p> Individualized student progress reports for <a href="https://yleana.org/">Yleana Leadership Academy</a>, a nonprofit test prep camp. Reports were provided weekly to teachers so they knew what areas to focus on for each student, so they could provide individualized problem sets, and to group together students with similar needs. </p>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="img/Group%20G%20Possibilities.png">
-                <h3>World Cup 2014: Group G</h3>
-                <div class="imgBox">
-                  <img src="img/Group G Possibilities.png">
-                </div>
-              </a>
-              <p> I was stressing out about whether team USA would make it out of Group G going into their game vs. Germany, so I made a chart. I posted it to a couple of social media sites and it generated 400,000 views in 24 hours.  </p>
-            </div>
-          </div>
-
-
-          <div class="col-md-6" >
-            <div class="project">
-              <a href="https://charlesdguthrie.github.io/cityHall/">
-                <h3> City Hall </h3>
-                <div class="imgBox">
-                  <img src="img/cityHall.png">
-                </div>
-              </a>
-              <p> If American cities had the same geographic footprint, which would have the biggest population? </p>
-            </div>
-          </div>
-
+          </a>
+          <p> Infographic about Parkinson's disease made with Vicky Sarmiento for the American Parkinson's Disease Association </p>
         </div>
+      </div>
 
-        <div class="row">
-          <h2> Small Projects </h2>
-        </div>
+    </div>
 
-        <div class="row">
+    <div class="row">
 
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://bl.ocks.org/charlesdguthrie/8950493">
-                <h3> 3D Parallax Effect </h3>
-                <div class="imgBox">
-                  <img src="img/parallax.png">
-                </div>
-              </a>
-              <p> A simple example demonstrating how to achieve 3-D effects using parallax in D3 </p>
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://nickmcclellan.github.io/dcaction/">
+            <h3> DC Action Project </h3>
+            <div class="imgBox">
+              <img src="img/dcaction.png">
             </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://charlieguthrie.com/APDA_Clock/">
-                <h3> APDA Parkinson's Infographic </h3>
-                <div class="imgBox">
-                  <div class="chart" style="width:440px; margin-top:-12px;">
-                  </div>
-                </div>
-              </a>
-              <p> Infographic about Parkinson's disease made with Vicky Sarmiento for the American Parkinson's Disease Association </p>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://bl.ocks.org/charlesdguthrie/11356441">
-                <h3> Live-Updating Bar Chart </h3>
-                <div class="imgBox">
-                  <img src="img/liveUpdatingBarChart.png">
-                </div>
-              </a>
-              <p> A bar chart that updates live, for displaying and ranking streaming data for The New York Times </p>
-            </div>
-          </div>
-
+          </a>
+          <p> An interactive map of statistics displaying where resources and well-being vary in D.C.  A volunteer collaboration with Nick McClellan et al through <a href="https://www.datakind.org/">Datakind</a> </p>
         </div>
+      </div>
 
-        <div class="row">
-          <h2> Art </h2>
-        </div>
-
-        <div class="row">
-
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://www.instagram.com/charlesdguthrie/">
-                <h3> Instagram </h3>
-                <div class="imgBox">
-                  <img src="img/rae_comic.png">
-                </div>
-              </a>
-              <p> Comics and paintings on instagram </p>
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://bl.ocks.org/charlesdguthrie/11356441">
+            <h3> Live-Updating Bar Chart </h3>
+            <div class="imgBox">
+              <img src="img/liveUpdatingBarChart.png">
             </div>
-          </div>
+          </a>
+          <p> A bar chart that updates live, for displaying and ranking streaming data for The New York Times </p>
+        </div>
+      </div>
 
-          <div class="col-md-6">
-            <div class="project">
-              <a href="https://rarible.com/user/0xada8df7914fca6de176545ec88e3b81fbeb69d7d/sale">
-                <h3> NFTs for Sale </h3>
-                <div class="imgBox">
-                  <img src="img/parenthood.jpg">
-                  </div>
-                </div>
-              </a>
-              <p> Art sold as NFTs via Rarible </p>
+    </div>
+
+  </div><!-- /.section-->
+
+
+  <!-- Talks -->
+  <div class="section">
+    <a class="anchor" id="talks"></a>
+    <div class="row">
+      <h1> Talks </h1>
+    </div>
+
+    <div class="row">
+
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://www.tandfonline.com/doi/full/10.1080/10401334.2020.1754216">
+            <h3>Evaluating Online Course Materials</h3>
+            <div class="imgBox">
+              <img src="img/medu_thumb.png">
             </div>
-          </div>
-
+          </a>
+          <p> Northeastern Group on Education Affairs (NEGEA), on 2017-05-05: Evaluating the impact of course material engagement on assessment performance, on the MedU online course platform. (<a href="files/NEGEA_AS_PRESENTED_2017-05-05.pdf">PDF</a>, <a href="files/NEGEA_AS_PRESENTED_2017-05-05.pptx">PPT</a>). Published to journal <em>Teaching and Learning in Medicine</em> (<a href="https://www.tandfonline.com/doi/full/10.1080/10401334.2020.1754216">abstract</a>). </p>
         </div>
+      </div>
 
-      </div><!-- /.section-->
-
-
-      <div class="section">
-        <a class="anchor" id="contact"></a>
-        <div class="row" style="text-align:center">
-          <div class="col-centered">
-            <h1> Contact </h1>
-            <ul class="fa-ul">
-              <li><a href="www.linkedin.com/in/guthriecharlie">
-                <i class="fa-li fa fa-linkedin-square fa-lg"></i>
-                LinkedIn: Charlie Guthrie
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/charlieguthrie">
-                  <i class="fa-li fa fa-twitter-square fa-lg"></i>
-                  Twitter: @CharlieGuthrie
-                </a>
-              </li>
-              <li>
-                <a href="mailto:charlesdguthrie+website@gmail.com">
-                  <i class="fa-li fa fa-envelope fa-lg"></i>
-                  Email: charlesdguthrie+website@gmail.com
-                </a>
-              </li>
-            </ul>
-          </div>
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://slides.com/charlesguthrie/democratizing-data">
+            <h3>Democratizing Data</h3>
+            <div class="imgBox">
+              <img src="img/democratizing_data_thumb.png">
+            </div>
+          </a>
+          <p> Innovation Enterprises Data Visualization Summit, San Jose, on 2015-04-28: A talk about making the NYTimes more data-driven by expanding access to internal data through simple visualization tools. </p>
         </div>
-      </div><!-- /.section-->
+      </div>
+    </div>
 
-      <div class="row bottomFiller"></div>
+    <div class="row">
+
+      <div class="col-md-6">
+        <div class="project">
+          <a href="files/DonorsChoosePresentation.pdf">
+            <h3> Auto-Screening for Donors Choose</h3>
+            <div class="imgBox">
+              <img src="img/DonorsChoosePreso.png">
+            </div>
+          </a>
+          <p> NYU Introduction to Data Science, New York City, on 2015-12-17: An exploratory analysis and prototype for automatically screening <a href="https://www.donorschoose.org">DonorsChoose.org</a> projects using machine learning techniques. See also the <a href="files/DonorsChooseReport.pdf">full report</a>. </p>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="project">
+          <a href="files/DashboardsWithD3.pdf">
+            <h3>Dashboards with D3</h3>
+            <div class="imgBox">
+              <img src="img/Dashboards with D3.png">
+            </div>
+          </a>
+          <p> NYC D3.js Meetup, New York City, 2014-04-28: Why and how to use D3 to make live-updating dashboards. See also <a href="https://www.icloud.com/keynote/000llbg0N6k0yI2cAmEOom6qQ#Dashboards_with_D3"> interactive keynote version</a></p>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /.section-->
 
 
-    </div><!-- /.container -->
+  <!-- Art -->
+  <div class="section">
+    <a class="anchor" id="art"></a>
+    <div class="row">
+      <h1> Art </h1>
+    </div>
 
-    <script src="js/clock.js" type="text/javascript"></script>
+    <div class="row">
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-  </body>
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://www.instagram.com/charlesdguthrie/">
+            <h3> Instagram </h3>
+            <div class="imgBox">
+              <img src="img/rae_comic.png">
+            </div>
+          </a>
+          <p> Comics and paintings on instagram </p>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="project">
+          <a href="https://rarible.com/user/0xada8df7914fca6de176545ec88e3b81fbeb69d7d/sale">
+            <h3> NFTs for Sale </h3>
+            <div class="imgBox">
+              <img src="img/parenthood.jpg">
+            </div>
+          </a>
+          <p> Art sold as NFTs via Rarible </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /.section-->
+
+
+  <div class="section">
+    <a class="anchor" id="contact"></a>
+    <div class="row" style="text-align:center">
+      <div class="col-centered">
+        <h1> Contact </h1>
+        <ul class="fa-ul">
+          <li><a href="www.linkedin.com/in/guthriecharlie">
+            <i class="fa-li fa fa-linkedin-square fa-lg"></i>
+            LinkedIn: Charlie Guthrie
+            </a>
+          </li>
+          <li>
+            <a href="https://twitter.com/charlieguthrie">
+              <i class="fa-li fa fa-twitter-square fa-lg"></i>
+              Twitter: @CharlieGuthrie
+            </a>
+          </li>
+          <li>
+            <a href="mailto:charlesdguthrie+website@gmail.com">
+              <i class="fa-li fa fa-envelope fa-lg"></i>
+              Email: charlesdguthrie+website@gmail.com
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div><!-- /.section-->
+
+  <div class="row bottomFiller"></div>
+
+
+</div><!-- /.container -->
+
+<script src="js/clock.js" type="text/javascript"></script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="bootstrap/js/bootstrap.min.js"></script>
+</body>
 </html>
