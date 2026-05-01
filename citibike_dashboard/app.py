@@ -13,7 +13,6 @@ from views.demand_patterns import render_demand_patterns
 from views.station_performance import render_station_performance
 from views.geographic import render_geographic
 from views.trip_analysis import render_trip_analysis
-from views.realtime_status import render_realtime_status
 
 st.set_page_config(
     page_title="CitiBike Operations Dashboard",
@@ -28,7 +27,6 @@ VIEWS = {
     "Station Performance": render_station_performance,
     "Geographic": render_geographic,
     "Trip Analysis": render_trip_analysis,
-    "Real-time Status": render_realtime_status,
 }
 
 st.sidebar.title("\U0001F6B2 CitiBike Dashboard")
@@ -41,7 +39,4 @@ filters = render_sidebar_filters(trips)
 
 st.title(selected_view)
 
-if selected_view == "Real-time Status":
-    VIEWS[selected_view]()
-else:
-    VIEWS[selected_view](filters)
+VIEWS[selected_view](filters)
