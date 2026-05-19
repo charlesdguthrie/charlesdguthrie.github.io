@@ -3,256 +3,360 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>🎮 Game Dev — Charlie & Bro</title>
+  <title>Card Game</title>
   <style>
+    :root {
+      --bg: #0d0d1a; --surface: #11111e; --border: #1e1b4b;
+      --accent: #6366f1; --text: #e0e0ff; --muted: #454880;
+      --cw: 68px; --ch: 96px;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    html, body { height: 100%; }
     body {
-      background: #0d0d1a;
-      color: #e0e0ff;
+      background: var(--bg); color: var(--text);
       font-family: 'Courier New', monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: 52px 1fr 148px 1fr 38px;
       overflow: hidden;
     }
 
-    canvas#stars {
-      position: fixed;
-      top: 0; left: 0;
-      z-index: 0;
-      pointer-events: none;
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 0 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
     }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 40px 20px;
-      max-width: 600px;
-    }
-
-    h1 {
-      font-size: 3rem;
-      letter-spacing: 4px;
-      color: #a78bfa;
-      text-shadow: 0 0 20px #7c3aed, 0 0 40px #7c3aed;
-      margin-bottom: 8px;
-      animation: pulse 3s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { text-shadow: 0 0 20px #7c3aed, 0 0 40px #7c3aed; }
-      50%       { text-shadow: 0 0 30px #a78bfa, 0 0 70px #a78bfa; }
-    }
-
-    .subtitle {
-      font-size: 1rem;
-      color: #818cf8;
-      letter-spacing: 2px;
-      margin-bottom: 40px;
-    }
-
     .badge {
-      display: inline-block;
-      background: #1e1b4b;
-      border: 1px solid #4f46e5;
-      border-radius: 999px;
-      padding: 6px 18px;
-      font-size: 0.75rem;
-      color: #a5b4fc;
-      letter-spacing: 2px;
-      margin-bottom: 40px;
-      animation: blink 1.4s step-end infinite;
+      background: var(--accent); color: #fff;
+      font-size: .65rem; font-weight: bold; letter-spacing: 2px;
+      padding: 4px 12px; border-radius: 999px; white-space: nowrap;
+    }
+    #status {
+      flex: 1; font-size: .65rem; color: var(--muted);
+      letter-spacing: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .controls { display: flex; gap: 6px; align-items: center; }
+    button {
+      background: #1a1840; color: var(--text);
+      border: 1px solid var(--accent); border-radius: 6px;
+      padding: 5px 11px; font-family: inherit; font-size: .65rem;
+      letter-spacing: 1px; cursor: pointer; transition: background .15s;
+    }
+    button:hover { background: var(--accent); }
+    input[type=number] {
+      width: 42px; background: var(--bg); color: var(--text);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 5px 6px; font-family: inherit; font-size: .7rem; text-align: center;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.4; }
+    /* ── HAND SECTIONS ── */
+    .section {
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 8px 14px; min-height: 0;
+    }
+    .section-label { font-size: .58rem; letter-spacing: 3px; color: var(--muted); }
+    .hand-row {
+      display: flex; gap: 6px; align-items: center;
+      overflow-x: auto; padding-bottom: 4px; flex: 1;
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+    }
+    .opp { opacity: .65; }
+
+    /* ── MIDDLE ── */
+    .middle {
+      display: grid; grid-template-columns: 180px 1fr;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .left-col {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 14px;
+      border-right: 1px solid var(--border);
+    }
+    .deck-wrap { position: relative; cursor: pointer; flex-shrink: 0; }
+    .deck-wrap:hover .card-back { transform: translateY(-5px); }
+    .deck-count {
+      position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+      font-size: .55rem; color: var(--muted); letter-spacing: 1px; white-space: nowrap;
+    }
+    .empty-slot {
+      width: var(--cw); height: var(--ch);
+      border: 2px dashed var(--border); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .55rem; color: var(--muted); letter-spacing: 2px;
     }
 
-    #pong {
-      border: 2px solid #4f46e5;
-      border-radius: 8px;
-      background: #0a0a18;
-      display: block;
-      margin: 0 auto 32px;
-      box-shadow: 0 0 30px #4f46e530;
-      cursor: none;
-      max-width: 100%;
+    /* ── DROP ZONES ── */
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: 10px;
+      display: flex; flex-wrap: wrap; gap: 6px;
+      align-items: center; padding: 10px;
+      transition: border-color .15s, background .15s;
     }
+    .drop-zone.drag-over { border-color: var(--accent); background: rgba(99,102,241,.08); }
+    .discard-zone {
+      width: 90px; flex-direction: column; justify-content: center;
+      min-height: var(--ch); flex-shrink: 0;
+    }
+    .play-zone { flex: 1; margin: 10px; min-height: var(--ch); align-content: flex-start; }
+    .zone-hint { font-size: .58rem; letter-spacing: 2px; color: var(--muted); text-align: center; }
 
-    .hint {
-      font-size: 0.7rem;
-      color: #6366f1;
-      letter-spacing: 2px;
-      margin-bottom: 32px;
+    /* ── FOOTER ── */
+    footer {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      font-size: .55rem; letter-spacing: 2px; color: var(--muted);
+      background: var(--surface); border-top: 1px solid var(--border);
     }
+    footer a { color: var(--accent); text-decoration: none; }
 
-    .footer-note {
-      font-size: 0.65rem;
-      color: #3730a3;
-      letter-spacing: 1px;
+    /* ── CARDS ── */
+    .card {
+      width: var(--cw); height: var(--ch);
+      min-width: var(--cw); min-height: var(--ch);
+      border-radius: 7px; background: #fff;
+      border: 1px solid #ddd;
+      position: relative; user-select: none;
+      transition: transform .1s, box-shadow .1s; flex-shrink: 0;
     }
-    .footer-note a { color: #6366f1; text-decoration: none; }
-    .footer-note a:hover { color: #a78bfa; }
+    .card.mine { cursor: grab; }
+    .card.mine:hover { transform: translateY(-8px); box-shadow: 0 10px 24px rgba(0,0,0,.55); }
+    .card.dragging { opacity: .35; }
+    .card.red { color: #d32020; }
+    .card.black { color: #111; }
+    .corner {
+      position: absolute; font-size: 11px; font-weight: bold;
+      line-height: 1.15; text-align: center;
+    }
+    .tl { top: 3px; left: 4px; }
+    .br { bottom: 3px; right: 4px; transform: rotate(180deg); }
+    .center-suit {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%); font-size: 22px;
+    }
+    .card-back {
+      background: repeating-linear-gradient(45deg,#3730a3 0,#3730a3 5px,#4338ca 5px,#4338ca 10px);
+      border: 2px solid #6366f1;
+    }
+    .card-back::after {
+      content: '✦';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      color: rgba(255,255,255,.25); font-size: 26px;
+    }
   </style>
 </head>
 <body>
 
-<canvas id="stars"></canvas>
+<header>
+  <span class="badge" id="badge">PLAYER ?</span>
+  <span id="status">—</span>
+  <div class="controls">
+    <button onclick="shuffleAll()">SHUFFLE</button>
+    <input type="number" id="deal-n" value="5" min="1" max="13" title="Cards to deal each">
+    <button onclick="dealCards()">DEAL</button>
+  </div>
+</header>
 
-<div class="container">
-  <h1>GAME ON</h1>
-  <p class="subtitle">CHARLIE &amp; BROTHER — BUILDING SOMETHING</p>
-  <span class="badge">● LIVE CODING</span>
-
-  <canvas id="pong" width="480" height="240"></canvas>
-  <p class="hint">MOVE YOUR MOUSE / TOUCH TO PLAY — BEAT THE CPU</p>
-
-  <p class="footer-note">
-    a very early prototype &nbsp;·&nbsp;
-    <a href="/">charlieguthrie.com</a>
-  </p>
+<!-- Opponent hand -->
+<div class="section opp">
+  <div class="section-label">OPPONENT — <span id="opp-count">0</span> CARDS</div>
+  <div class="hand-row" id="opp-hand"></div>
 </div>
 
+<!-- Middle: deck / discard / play area -->
+<div class="middle">
+  <div class="left-col">
+    <div class="deck-wrap" id="deck-wrap" onclick="drawCard()" title="Click to draw">
+      <!-- filled by render() -->
+    </div>
+    <div class="drop-zone discard-zone" id="discard-zone">
+      <span class="zone-hint">DISCARD</span>
+    </div>
+  </div>
+  <div class="drop-zone play-zone" id="play-area">
+    <span class="zone-hint">PLAY AREA — drag cards here</span>
+  </div>
+</div>
+
+<!-- My hand -->
+<div class="section">
+  <div class="section-label">YOUR HAND — <span id="my-count">0</span> CARDS</div>
+  <div class="hand-row" id="my-hand"></div>
+</div>
+
+<footer>
+  <a href="/">charlieguthrie.com</a>
+  <span>·</span>
+  <span>OPEN AS <a href="game.html?p=1">?p=1</a> AND <a href="game.html?p=2">?p=2</a> IN TWO TABS</span>
+</footer>
+
 <script>
-  // ── Starfield ──────────────────────────────────────────────
-  const sc = document.getElementById('stars');
-  const sx = sc.getContext('2d');
-  function resizeStars() { sc.width = innerWidth; sc.height = innerHeight; }
-  resizeStars();
-  window.addEventListener('resize', resizeStars);
-  const stars = Array.from({length: 180}, () => ({
-    x: Math.random(), y: Math.random(),
-    r: Math.random() * 1.4 + 0.2,
-    s: Math.random() * 0.3 + 0.05,
-    t: Math.random() * Math.PI * 2
-  }));
-  function drawStars() {
-    sx.clearRect(0, 0, sc.width, sc.height);
-    stars.forEach(s => {
-      s.t += s.s * 0.01;
-      const alpha = 0.4 + 0.5 * Math.sin(s.t);
-      sx.beginPath();
-      sx.arc(s.x * sc.width, s.y * sc.height, s.r, 0, Math.PI * 2);
-      sx.fillStyle = `rgba(167,139,250,${alpha})`;
-      sx.fill();
+// ── Player ──────────────────────────────────────────────────
+const PLAYER = parseInt(new URLSearchParams(location.search).get('p')) || 1;
+const ME = PLAYER === 1 ? 'p1' : 'p2';
+const OPP = PLAYER === 1 ? 'p2' : 'p1';
+document.getElementById('badge').textContent = `PLAYER ${PLAYER}`;
+document.title = `Card Game — P${PLAYER}`;
+
+// ── Deck ────────────────────────────────────────────────────
+const SUITS = ['♠','♥','♦','♣'];
+const VALS  = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const RED   = new Set(['♥','♦']);
+
+function makeDeck() {
+  return SUITS.flatMap(s => VALS.map(v => ({ id:v+s, suit:s, value:v, color: RED.has(s)?'red':'black' })));
+}
+function shuffle(a) {
+  a = [...a];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// ── State ───────────────────────────────────────────────────
+const KEY = 'cg-v2';
+const blank = () => ({ deck: shuffle(makeDeck()), p1:[], p2:[], play:[], discard:[], msg:'Shuffle and deal to start!', ts:0 });
+
+let S = (() => { try { const s=localStorage.getItem(KEY); return s?JSON.parse(s):blank(); } catch { return blank(); } })();
+
+function commit(next, msg) {
+  next.msg = msg; next.ts = Date.now(); S = next;
+  localStorage.setItem(KEY, JSON.stringify(S));
+  ch.postMessage(S); render();
+}
+
+// ── Sync ────────────────────────────────────────────────────
+const ch = new BroadcastChannel('cg-v2');
+ch.onmessage = ({data}) => { if (data.ts > S.ts) { S = data; render(); } };
+
+// ── Actions ─────────────────────────────────────────────────
+function shuffleAll() {
+  const all = [...S.deck,...S.p1,...S.p2,...S.play,...S.discard];
+  commit({ deck:shuffle(all), p1:[], p2:[], play:[], discard:[] }, `P${PLAYER} shuffled everything into the deck`);
+}
+function dealCards() {
+  const n = Math.max(1, Math.min(13, parseInt(document.getElementById('deal-n').value)||5));
+  const ns = {...S, deck:[...S.deck], p1:[...S.p1], p2:[...S.p2]};
+  for (let i=0; i<n; i++) {
+    if (ns.deck.length) ns.p1.push(ns.deck.pop());
+    if (ns.deck.length) ns.p2.push(ns.deck.pop());
+  }
+  commit(ns, `P${PLAYER} dealt ${n} cards each — ${ns.deck.length} left in deck`);
+}
+function drawCard() {
+  if (!S.deck.length) return;
+  const ns = {...S, deck:[...S.deck], [ME]:[...S[ME]]};
+  const c = ns.deck.pop(); ns[ME].push(c);
+  commit(ns, `P${PLAYER} drew ${c.value}${c.suit}`);
+}
+
+// ── Drag & Drop ─────────────────────────────────────────────
+let dragged = null;
+
+function makeCard(card, opts={}) {
+  const el = document.createElement('div');
+  if (opts.back) { el.className = 'card card-back'; return el; }
+  el.className = `card ${card.color}`;
+  el.innerHTML = `<div class="corner tl">${card.value}<br>${card.suit}</div>
+                  <div class="center-suit">${card.suit}</div>
+                  <div class="corner br">${card.value}<br>${card.suit}</div>`;
+  if (opts.mine) {
+    el.classList.add('mine');
+    el.draggable = true;
+    el.addEventListener('dragstart', e => {
+      dragged = card;
+      requestAnimationFrame(() => el.classList.add('dragging'));
+      e.dataTransfer.effectAllowed = 'move';
     });
-    requestAnimationFrame(drawStars);
+    el.addEventListener('dragend', () => { el.classList.remove('dragging'); dragged = null; });
   }
-  requestAnimationFrame(drawStars);
+  return el;
+}
 
-  // ── Pong ───────────────────────────────────────────────────
-  const c = document.getElementById('pong');
-  const ctx = c.getContext('2d');
-  const W = c.width, H = c.height;
-  const PAD_W = 10, PAD_H = 60, BALL_R = 7;
-
-  let state = {
-    ball:   { x: W/2, y: H/2, vx: 3, vy: 2.2 },
-    player: { y: H/2 - PAD_H/2, score: 0 },
-    cpu:    { y: H/2 - PAD_H/2, score: 0 },
-    mouseY: H/2
-  };
-
-  c.addEventListener('mousemove', e => {
-    const r = c.getBoundingClientRect();
-    state.mouseY = (e.clientY - r.top) * (H / r.height);
+function setupDrop(el, zone) {
+  el.addEventListener('dragover',  e => { e.preventDefault(); el.classList.add('drag-over'); });
+  el.addEventListener('dragleave', ()  => el.classList.remove('drag-over'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); el.classList.remove('drag-over');
+    if (!dragged) return;
+    const inHand = S[ME].find(c => c.id === dragged.id);
+    if (!inHand) return;
+    const ns = {...S, [ME]: S[ME].filter(c => c.id !== dragged.id)};
+    if (zone === 'discard') { ns.discard = [...S.discard, dragged]; commit(ns, `P${PLAYER} discarded ${dragged.value}${dragged.suit}`); }
+    if (zone === 'play')    { ns.play    = [...S.play,    dragged]; commit(ns, `P${PLAYER} played ${dragged.value}${dragged.suit}`); }
+    dragged = null;
   });
-  c.addEventListener('touchmove', e => {
-    e.preventDefault();
-    const r = c.getBoundingClientRect();
-    state.mouseY = (e.touches[0].clientY - r.top) * (H / r.height);
-  }, { passive: false });
+}
 
-  function resetBall(dir = 1) {
-    state.ball = { x: W/2, y: H/2,
-      vx: dir * (3 + Math.random()),
-      vy: (Math.random() - 0.5) * 5 };
+setupDrop(document.getElementById('discard-zone'), 'discard');
+setupDrop(document.getElementById('play-area'),    'play');
+
+// ── Render ──────────────────────────────────────────────────
+function fill(id, cards, opts={}) {
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  cards.forEach(c => el.appendChild(makeCard(c, opts)));
+}
+
+function render() {
+  document.getElementById('status').textContent = S.msg;
+  document.getElementById('opp-count').textContent = S[OPP].length;
+  document.getElementById('my-count').textContent  = S[ME].length;
+
+  // Opponent — face down
+  const oh = document.getElementById('opp-hand');
+  oh.innerHTML = '';
+  S[OPP].forEach(() => oh.appendChild(makeCard(null, {back:true})));
+
+  // My hand — face up, draggable
+  const mh = document.getElementById('my-hand');
+  mh.innerHTML = '';
+  S[ME].forEach(c => mh.appendChild(makeCard(c, {mine:true})));
+
+  // Deck
+  const dw = document.getElementById('deck-wrap');
+  dw.innerHTML = '';
+  if (S.deck.length) {
+    dw.appendChild(makeCard(null, {back:true}));
+    const cnt = document.createElement('div');
+    cnt.className = 'deck-count';
+    cnt.textContent = `${S.deck.length} left`;
+    dw.appendChild(cnt);
+  } else {
+    const e = document.createElement('div');
+    e.className = 'empty-slot'; e.textContent = 'EMPTY';
+    dw.appendChild(e);
   }
 
-  function update() {
-    const { ball, player, cpu } = state;
-
-    player.y = Math.max(0, Math.min(H - PAD_H, state.mouseY - PAD_H/2));
-
-    const cpuCenter = cpu.y + PAD_H/2;
-    if (cpuCenter < ball.y - 4) cpu.y += 2.4;
-    if (cpuCenter > ball.y + 4) cpu.y -= 2.4;
-    cpu.y = Math.max(0, Math.min(H - PAD_H, cpu.y));
-
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-
-    if (ball.y - BALL_R < 0)     { ball.y = BALL_R;     ball.vy *= -1; }
-    if (ball.y + BALL_R > H)     { ball.y = H - BALL_R; ball.vy *= -1; }
-
-    if (ball.x - BALL_R < PAD_W + 8 &&
-        ball.y > player.y && ball.y < player.y + PAD_H) {
-      ball.vx = Math.abs(ball.vx) * 1.05;
-      ball.vy += (ball.y - (player.y + PAD_H/2)) * 0.1;
-    }
-
-    if (ball.x + BALL_R > W - PAD_W - 8 &&
-        ball.y > cpu.y && ball.y < cpu.y + PAD_H) {
-      ball.vx = -Math.abs(ball.vx) * 1.05;
-      ball.vy += (ball.y - (cpu.y + PAD_H/2)) * 0.1;
-    }
-
-    const speed = Math.hypot(ball.vx, ball.vy);
-    if (speed > 12) { ball.vx *= 12/speed; ball.vy *= 12/speed; }
-
-    if (ball.x < 0)  { cpu.score++;    resetBall( 1); }
-    if (ball.x > W)  { player.score++; resetBall(-1); }
+  // Play area
+  const pa = document.getElementById('play-area');
+  pa.innerHTML = '';
+  if (S.play.length) {
+    S.play.forEach(c => pa.appendChild(makeCard(c)));
+  } else {
+    pa.innerHTML = '<span class="zone-hint">PLAY AREA — drag cards here</span>';
   }
 
-  function draw() {
-    const { ball, player, cpu } = state;
-    ctx.clearRect(0, 0, W, H);
-
-    ctx.setLineDash([6, 8]);
-    ctx.strokeStyle = '#1e1b4b';
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(W/2, 0); ctx.lineTo(W/2, H); ctx.stroke();
-    ctx.setLineDash([]);
-
-    ctx.font = 'bold 28px Courier New';
-    ctx.fillStyle = '#312e81';
-    ctx.textAlign = 'center';
-    ctx.fillText(player.score, W/4, 36);
-    ctx.fillText(cpu.score, 3*W/4, 36);
-
-    const grd = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, BALL_R * 3);
-    grd.addColorStop(0, 'rgba(167,139,250,0.6)');
-    grd.addColorStop(1, 'rgba(167,139,250,0)');
-    ctx.fillStyle = grd;
-    ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_R * 3, 0, Math.PI*2); ctx.fill();
-
-    ctx.fillStyle = '#a78bfa';
-    ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI*2); ctx.fill();
-
-    const drawPad = (x, y) => {
-      ctx.shadowColor = '#7c3aed';
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = '#818cf8';
-      ctx.beginPath();
-      ctx.roundRect(x, y, PAD_W, PAD_H, 4);
-      ctx.fill();
-      ctx.shadowBlur = 0;
-    };
-    drawPad(8, player.y);
-    drawPad(W - PAD_W - 8, cpu.y);
+  // Discard — show top card + count
+  const dz = document.getElementById('discard-zone');
+  dz.innerHTML = '';
+  if (S.discard.length) {
+    dz.appendChild(makeCard(S.discard[S.discard.length-1]));
+    const cnt = document.createElement('div');
+    cnt.className = 'zone-hint'; cnt.style.marginTop = '6px';
+    cnt.textContent = `${S.discard.length} card${S.discard.length>1?'s':''}`;
+    dz.appendChild(cnt);
+  } else {
+    dz.innerHTML = '<span class="zone-hint">DISCARD</span>';
   }
+}
 
-  function loop() {
-    update();
-    draw();
-    requestAnimationFrame(loop);
-  }
-  loop();
+render();
 </script>
 </body>
 </html>
