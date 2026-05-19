@@ -21,6 +21,34 @@
       overflow: hidden;
     }
 
+    /* ── SETUP OVERLAY ── */
+    #setup-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(10,10,24,.97);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .setup-box {
+      background: var(--surface); border: 1px solid var(--accent);
+      border-radius: 14px; padding: 36px 40px; max-width: 420px; width: 90%;
+      text-align: center;
+    }
+    .setup-box h2 { color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; font-size: 1.2rem; }
+    .setup-box p  { color: var(--muted); font-size: .7rem; letter-spacing: 1px; margin-bottom: 24px; line-height: 1.8; }
+    .setup-box input {
+      width: 100%; background: var(--bg); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; font-family: inherit; font-size: .75rem;
+      margin-bottom: 10px; letter-spacing: 1px;
+    }
+    .setup-box input:focus { outline: none; border-color: var(--accent); }
+    .setup-box .row { display: flex; gap: 10px; margin-bottom: 10px; }
+    .setup-box .row input { margin-bottom: 0; }
+    .setup-box button {
+      width: 100%; padding: 10px; font-size: .8rem; letter-spacing: 2px;
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+    .setup-box .err { color: #f87171; font-size: .65rem; margin-top: 8px; min-height: 16px; }
+
     /* ── HEADER ── */
     header {
       display: flex; align-items: center; gap: 12px;
@@ -50,6 +78,11 @@
       border: 1px solid var(--border); border-radius: 6px;
       padding: 5px 6px; font-family: inherit; font-size: .7rem; text-align: center;
     }
+    .conn-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #374151; flex-shrink: 0;
+      transition: background .3s;
+    }
+    .conn-dot.live { background: #34d399; box-shadow: 0 0 6px #34d399; }
 
     /* ── HAND SECTIONS ── */
     .section {
@@ -150,28 +183,45 @@
 </head>
 <body>
 
+<!-- Setup overlay -->
+<div id="setup-overlay">
+  <div class="setup-box">
+    <h2>🃏 CARD GAME</h2>
+    <p>Paste your Firebase config values below.<br>Both players use the same Room ID.</p>
+    <input id="cfg-apiKey"     placeholder="apiKey" />
+    <input id="cfg-dbUrl"      placeholder="databaseURL  (ends in .firebaseio.com)" />
+    <input id="cfg-projectId"  placeholder="projectId" />
+    <div class="row">
+      <input id="cfg-room"     placeholder="Room ID  (e.g. game1)" style="flex:1" />
+      <select id="cfg-player" style="background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 8px;font-family:inherit;font-size:.75rem;">
+        <option value="1">P1</option>
+        <option value="2">P2</option>
+      </select>
+    </div>
+    <button onclick="startGame()">JOIN GAME</button>
+    <div class="err" id="cfg-err"></div>
+  </div>
+</div>
+
 <header>
   <span class="badge" id="badge">PLAYER ?</span>
   <span id="status">—</span>
   <div class="controls">
+    <div class="conn-dot" id="conn-dot" title="Connection status"></div>
     <button onclick="shuffleAll()">SHUFFLE</button>
     <input type="number" id="deal-n" value="5" min="1" max="13" title="Cards to deal each">
     <button onclick="dealCards()">DEAL</button>
   </div>
 </header>
 
-<!-- Opponent hand -->
 <div class="section opp">
   <div class="section-label">OPPONENT — <span id="opp-count">0</span> CARDS</div>
   <div class="hand-row" id="opp-hand"></div>
 </div>
 
-<!-- Middle: deck / discard / play area -->
 <div class="middle">
   <div class="left-col">
-    <div class="deck-wrap" id="deck-wrap" onclick="drawCard()" title="Click to draw">
-      <!-- filled by render() -->
-    </div>
+    <div class="deck-wrap" id="deck-wrap" onclick="drawCard()" title="Click to draw"></div>
     <div class="drop-zone discard-zone" id="discard-zone">
       <span class="zone-hint">DISCARD</span>
     </div>
@@ -181,7 +231,6 @@
   </div>
 </div>
 
-<!-- My hand -->
 <div class="section">
   <div class="section-label">YOUR HAND — <span id="my-count">0</span> CARDS</div>
   <div class="hand-row" id="my-hand"></div>
@@ -190,18 +239,15 @@
 <footer>
   <a href="/">charlieguthrie.com</a>
   <span>·</span>
-  <span>OPEN AS <a href="game.html?p=1">?p=1</a> AND <a href="game.html?p=2">?p=2</a> IN TWO TABS</span>
+  <span id="room-label">room: —</span>
 </footer>
 
-<script>
-// ── Player ──────────────────────────────────────────────────
-const PLAYER = parseInt(new URLSearchParams(location.search).get('p')) || 1;
-const ME = PLAYER === 1 ? 'p1' : 'p2';
-const OPP = PLAYER === 1 ? 'p2' : 'p1';
-document.getElementById('badge').textContent = `PLAYER ${PLAYER}`;
-document.title = `Card Game — P${PLAYER}`;
+<!-- Firebase v9 compat -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
-// ── Deck ────────────────────────────────────────────────────
+<script>
+// ── Deck helpers ────────────────────────────────────────────
 const SUITS = ['♠','♥','♦','♣'];
 const VALS  = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const RED   = new Set(['♥','♦']);
@@ -217,47 +263,101 @@ function shuffle(a) {
   }
   return a;
 }
+const blank = () => ({
+  deck: shuffle(makeDeck()), p1:[], p2:[], play:[], discard:[],
+  msg:'Shuffle and deal to start!'
+});
 
-// ── State ───────────────────────────────────────────────────
-const KEY = 'cg-v2';
-const blank = () => ({ deck: shuffle(makeDeck()), p1:[], p2:[], play:[], discard:[], msg:'Shuffle and deal to start!', ts:0 });
+// ── Game state ──────────────────────────────────────────────
+let db, roomRef, ME, OPP, S = null;
+let dragged = null;
 
-let S = (() => { try { const s=localStorage.getItem(KEY); return s?JSON.parse(s):blank(); } catch { return blank(); } })();
+function startGame() {
+  const apiKey    = document.getElementById('cfg-apiKey').value.trim();
+  const dbUrl     = document.getElementById('cfg-dbUrl').value.trim();
+  const projectId = document.getElementById('cfg-projectId').value.trim();
+  const room      = document.getElementById('cfg-room').value.trim() || 'room1';
+  const player    = parseInt(document.getElementById('cfg-player').value);
 
-function commit(next, msg) {
-  next.msg = msg; next.ts = Date.now(); S = next;
-  localStorage.setItem(KEY, JSON.stringify(S));
-  ch.postMessage(S); render();
+  if (!apiKey || !dbUrl || !projectId) {
+    document.getElementById('cfg-err').textContent = 'Fill in apiKey, databaseURL, and projectId.';
+    return;
+  }
+
+  try {
+    // Init Firebase (handle duplicate app)
+    const app = firebase.apps.length
+      ? firebase.app()
+      : firebase.initializeApp({ apiKey, databaseURL: dbUrl, projectId });
+    db = firebase.database(app);
+  } catch(e) {
+    document.getElementById('cfg-err').textContent = e.message;
+    return;
+  }
+
+  ME = player === 1 ? 'p1' : 'p2';
+  OPP = player === 1 ? 'p2' : 'p1';
+  document.getElementById('badge').textContent = `PLAYER ${player}`;
+  document.title = `Card Game — P${player}`;
+  document.getElementById('room-label').textContent = `room: ${room}`;
+  document.getElementById('setup-overlay').style.display = 'none';
+
+  roomRef = db.ref(`rooms/${room}`);
+
+  // Connection indicator
+  db.ref('.info/connected').on('value', snap => {
+    document.getElementById('conn-dot').classList.toggle('live', !!snap.val());
+  });
+
+  // Subscribe to state
+  roomRef.on('value', snap => {
+    const val = snap.val();
+    if (!val) {
+      // First player in — initialize
+      roomRef.set(blank());
+    } else {
+      S = val;
+      // Arrays may come back as objects from Firebase — normalize
+      ['deck','p1','p2','play','discard'].forEach(k => {
+        if (S[k] && !Array.isArray(S[k])) S[k] = Object.values(S[k]);
+        if (!S[k]) S[k] = [];
+      });
+      render();
+    }
+  });
+
+  setupDropZones();
 }
-
-// ── Sync ────────────────────────────────────────────────────
-const ch = new BroadcastChannel('cg-v2');
-ch.onmessage = ({data}) => { if (data.ts > S.ts) { S = data; render(); } };
 
 // ── Actions ─────────────────────────────────────────────────
+function commit(next, msg) {
+  next.msg = msg;
+  roomRef.set(next);
+}
+
 function shuffleAll() {
+  if (!roomRef) return;
   const all = [...S.deck,...S.p1,...S.p2,...S.play,...S.discard];
-  commit({ deck:shuffle(all), p1:[], p2:[], play:[], discard:[] }, `P${PLAYER} shuffled everything into the deck`);
+  commit({ deck:shuffle(all), p1:[], p2:[], play:[], discard:[] }, `P${ME.slice(1)} shuffled everything`);
 }
 function dealCards() {
+  if (!roomRef) return;
   const n = Math.max(1, Math.min(13, parseInt(document.getElementById('deal-n').value)||5));
-  const ns = {...S, deck:[...S.deck], p1:[...S.p1], p2:[...S.p2]};
+  const ns = { deck:[...S.deck], p1:[...S.p1], p2:[...S.p2], play:[...S.play], discard:[...S.discard] };
   for (let i=0; i<n; i++) {
     if (ns.deck.length) ns.p1.push(ns.deck.pop());
     if (ns.deck.length) ns.p2.push(ns.deck.pop());
   }
-  commit(ns, `P${PLAYER} dealt ${n} cards each — ${ns.deck.length} left in deck`);
+  commit(ns, `P${ME.slice(1)} dealt ${n} cards each — ${ns.deck.length} left`);
 }
 function drawCard() {
-  if (!S.deck.length) return;
-  const ns = {...S, deck:[...S.deck], [ME]:[...S[ME]]};
+  if (!roomRef || !S || !S.deck.length) return;
+  const ns = { deck:[...S.deck], p1:[...S.p1], p2:[...S.p2], play:[...S.play], discard:[...S.discard] };
   const c = ns.deck.pop(); ns[ME].push(c);
-  commit(ns, `P${PLAYER} drew ${c.value}${c.suit}`);
+  commit(ns, `P${ME.slice(1)} drew ${c.value}${c.suit}`);
 }
 
 // ── Drag & Drop ─────────────────────────────────────────────
-let dragged = null;
-
 function makeCard(card, opts={}) {
   const el = document.createElement('div');
   if (opts.back) { el.className = 'card card-back'; return el; }
@@ -278,33 +378,33 @@ function makeCard(card, opts={}) {
   return el;
 }
 
-function setupDrop(el, zone) {
-  el.addEventListener('dragover',  e => { e.preventDefault(); el.classList.add('drag-over'); });
-  el.addEventListener('dragleave', ()  => el.classList.remove('drag-over'));
-  el.addEventListener('drop', e => {
-    e.preventDefault(); el.classList.remove('drag-over');
-    if (!dragged) return;
-    const inHand = S[ME].find(c => c.id === dragged.id);
-    if (!inHand) return;
-    const ns = {...S, [ME]: S[ME].filter(c => c.id !== dragged.id)};
-    if (zone === 'discard') { ns.discard = [...S.discard, dragged]; commit(ns, `P${PLAYER} discarded ${dragged.value}${dragged.suit}`); }
-    if (zone === 'play')    { ns.play    = [...S.play,    dragged]; commit(ns, `P${PLAYER} played ${dragged.value}${dragged.suit}`); }
-    dragged = null;
-  });
+function setupDropZones() {
+  const makeDrop = (id, zone) => {
+    const el = document.getElementById(id);
+    el.addEventListener('dragover',  e => { e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', ()  => el.classList.remove('drag-over'));
+    el.addEventListener('drop', e => {
+      e.preventDefault(); el.classList.remove('drag-over');
+      if (!dragged || !S) return;
+      if (!S[ME].find(c => c.id === dragged.id)) return;
+      const ns = {
+        deck:[...S.deck], p1:[...S.p1], p2:[...S.p2],
+        play:[...S.play], discard:[...S.discard]
+      };
+      ns[ME] = ns[ME].filter(c => c.id !== dragged.id);
+      if (zone === 'discard') { ns.discard.push(dragged); commit(ns, `P${ME.slice(1)} discarded ${dragged.value}${dragged.suit}`); }
+      if (zone === 'play')    { ns.play.push(dragged);    commit(ns, `P${ME.slice(1)} played ${dragged.value}${dragged.suit}`); }
+      dragged = null;
+    });
+  };
+  makeDrop('discard-zone', 'discard');
+  makeDrop('play-area',    'play');
 }
-
-setupDrop(document.getElementById('discard-zone'), 'discard');
-setupDrop(document.getElementById('play-area'),    'play');
 
 // ── Render ──────────────────────────────────────────────────
-function fill(id, cards, opts={}) {
-  const el = document.getElementById(id);
-  el.innerHTML = '';
-  cards.forEach(c => el.appendChild(makeCard(c, opts)));
-}
-
 function render() {
-  document.getElementById('status').textContent = S.msg;
+  if (!S) return;
+  document.getElementById('status').textContent   = S.msg || '';
   document.getElementById('opp-count').textContent = S[OPP].length;
   document.getElementById('my-count').textContent  = S[ME].length;
 
@@ -342,7 +442,7 @@ function render() {
     pa.innerHTML = '<span class="zone-hint">PLAY AREA — drag cards here</span>';
   }
 
-  // Discard — show top card + count
+  // Discard — top card + count
   const dz = document.getElementById('discard-zone');
   dz.innerHTML = '';
   if (S.discard.length) {
@@ -355,8 +455,6 @@ function render() {
     dz.innerHTML = '<span class="zone-hint">DISCARD</span>';
   }
 }
-
-render();
 </script>
 </body>
 </html>
