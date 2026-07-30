@@ -1,0 +1,923 @@
+:root {
+  --felt: #1f6b4a;
+  --felt-dark: #17583d;
+  --ink: #1a1a2e;
+  --gold: #e8c86a;
+  --tile-face: #fbfaf5;
+  --tile-edge: #d8d4c4;
+  --bam: #1f8a3b;
+  --crak: #c0392b;
+  --dot: #2565c7;
+  --shadow: rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #f4f4f4;
+  background: radial-gradient(circle at 50% 20%, var(--felt), var(--felt-dark) 75%);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 16px 28px;
+}
+
+/* ---- top bar ---- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.brand {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  /* The brand doubles as the way back to charlieguthrie.com. */
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.brand:hover,
+.brand:focus-visible {
+  color: var(--gold);
+}
+.status {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: center;
+}
+.pill {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+.pill-turn {
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ---- buttons ---- */
+.btn {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+.btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn-primary {
+  background: var(--gold);
+  color: var(--ink);
+  border-color: transparent;
+}
+.btn-primary:hover {
+  background: #f0d585;
+}
+.btn-ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ---- table layout ---- */
+.table {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.opponents {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.opponent {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px;
+}
+.opponent-active {
+  border-color: var(--gold);
+  animation: turn-glow 1.8s ease-in-out infinite;
+}
+.opponent-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.opponent-name {
+  font-weight: 700;
+}
+.opponent-wind {
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.opponent-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.opponent-count {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* ---- center discard ---- */
+.center {
+  display: flex;
+  justify-content: center;
+}
+.discard-area {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 14px;
+  padding: 14px 26px;
+  text-align: center;
+  min-width: 220px;
+}
+.discard-label {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+.last-discard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.last-discard-by {
+  font-size: 12px;
+  opacity: 0.8;
+}
+.discard-empty {
+  opacity: 0.6;
+  font-style: italic;
+  padding: 16px 0;
+}
+
+/* ---- call window prompt ---- */
+.call-prompt {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
+}
+.call-prompt-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--gold);
+}
+.call-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* ---- exposures (called melds) ---- */
+.exposures {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.meld {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 6px;
+}
+
+/* ---- your area ---- */
+.you {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+}
+.you-active {
+  border-color: var(--gold);
+  animation: turn-glow 1.8s ease-in-out infinite;
+}
+
+/* Pulsing box-shadow used to mark whichever seat needs to act right now —
+   the current player's turn, or the human during Charleston/courtesy. */
+@keyframes turn-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px rgba(232, 200, 106, 0.35), 0 0 10px 1px rgba(232, 200, 106, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(232, 200, 106, 0.75), 0 0 18px 4px rgba(232, 200, 106, 0.45);
+  }
+}
+.you-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.you-name {
+  font-weight: 700;
+}
+.you-hint {
+  font-size: 13px;
+  opacity: 0.85;
+  flex: 1;
+}
+.rack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---- tiles ---- */
+.tile {
+  width: 46px;
+  height: 62px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fff, var(--tile-face));
+  border: 1px solid var(--tile-edge);
+  box-shadow: 0 2px 4px var(--shadow), inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  padding: 0;
+  font-family: inherit;
+  cursor: default;
+  user-select: none;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.tile-sm {
+  width: 32px;
+  height: 44px;
+  border-radius: 5px;
+}
+.tile-sm .tile-main {
+  font-size: 15px;
+}
+.tile-sm .tile-sub {
+  display: none;
+}
+.tile-clickable {
+  cursor: pointer;
+}
+.tile-clickable:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 14px var(--shadow);
+}
+.tile-selected {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 14px var(--shadow);
+  outline: 2px solid var(--gold);
+}
+.tile-dimmed {
+  filter: saturate(0.85) brightness(0.98);
+}
+.tile-main {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+}
+.tile-sub {
+  font-size: 9px;
+  margin-top: 3px;
+  opacity: 0.7;
+  letter-spacing: 0.2px;
+}
+.tile-suit-B .tile-main {
+  color: var(--bam);
+}
+.tile-suit-C .tile-main {
+  color: var(--crak);
+}
+.tile-suit-D .tile-main {
+  color: var(--dot);
+}
+.tile-wind .tile-main {
+  color: #333;
+}
+.tile-dragon-r .tile-main {
+  color: var(--crak);
+}
+.tile-dragon-g .tile-main {
+  color: var(--bam);
+}
+.tile-dragon-w .tile-main {
+  color: var(--dot);
+}
+.tile-flower .tile-main {
+  color: #d81b8c;
+}
+.tile-joker {
+  background: linear-gradient(180deg, #fff5d6, #ffe9a8);
+}
+.tile-joker .tile-main {
+  color: #b8860b;
+}
+.tile-back {
+  background: repeating-linear-gradient(45deg, #2a5c8a, #2a5c8a 4px, #24507a 4px, #24507a 8px);
+  border-color: #1c3d5c;
+}
+
+/* ---- log ---- */
+.log {
+  margin-top: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+.log-line {
+  opacity: 0.6;
+  padding: 2px 0;
+}
+.log-latest {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* ---- overlay ---- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.overlay-card {
+  background: #fff;
+  color: var(--ink);
+  border-radius: 16px;
+  padding: 32px 40px;
+  text-align: center;
+  max-width: 460px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.overlay-card h1 {
+  margin: 0 0 12px;
+}
+.overlay-hand {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+.overlay-panel {
+  background: var(--felt-dark);
+  color: #f4f4f4;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 20px 24px;
+  max-width: 640px;
+  width: 90vw;
+  max-height: 82vh;
+  overflow-y: auto;
+  text-align: left;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.overlay-panel .card-panel {
+  max-height: none;
+}
+
+/* ---- closeness helper ---- */
+.closeness-helper {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.closeness-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.closeness-empty {
+  font-size: 13px;
+  opacity: 0.7;
+  font-style: italic;
+}
+.closeness-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.closeness-row {
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.closeness-row-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.closeness-section {
+  font-weight: 700;
+  font-size: 13px;
+}
+.closeness-points {
+  font-size: 12px;
+  opacity: 0.75;
+}
+.closeness-distance {
+  margin-left: auto;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.closeness-distance-ready {
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 700;
+}
+.closeness-desc {
+  font-size: 12px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+.closeness-need {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.closeness-need-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.closeness-need-tile-wrap {
+  position: relative;
+}
+.closeness-joker-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 15px;
+  text-align: center;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+.closeness-need-count {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* ---- card reference panel ---- */
+.card-panel {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+.card-panel-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.card-panel-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.card-section {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 4px 8px;
+}
+.card-section-summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+.card-section-summary::-webkit-details-marker {
+  display: none;
+}
+.card-section-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: var(--gold);
+  color: var(--ink);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+.card-hand-list {
+  list-style: none;
+  margin: 4px 0 6px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.card-hand {
+  border-radius: 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.card-hand-close {
+  background: rgba(232, 200, 106, 0.14);
+  border: 1px solid rgba(232, 200, 106, 0.4);
+}
+.card-hand-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.card-hand-points {
+  font-weight: 700;
+  opacity: 0.85;
+}
+.card-hand-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: var(--gold);
+  color: var(--ink);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+.card-hand-concealed {
+  font-size: 10px;
+  opacity: 0.7;
+  font-style: italic;
+}
+.card-hand-desc {
+  font-size: 12px;
+  opacity: 0.85;
+  margin-top: 3px;
+}
+
+/* ---- win screen + confetti ---- */
+.win-screen {
+  position: relative;
+  overflow: hidden;
+  max-width: 560px;
+}
+.win-reveal-label {
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--felt-dark);
+  opacity: 0.7;
+  margin: 4px 0 8px;
+  text-align: left;
+}
+.win-reveal-exposures {
+  justify-content: flex-start;
+}
+.win-reveal-rack {
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+.confetti-piece {
+  position: absolute;
+  top: -14px;
+  border-radius: 2px;
+  opacity: 0.95;
+  animation-name: confetti-fall;
+  animation-timing-function: cubic-bezier(0.4, 0.1, 0.6, 1);
+  animation-fill-mode: forwards;
+}
+@keyframes confetti-fall {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--drift), 480px) rotate(var(--rot));
+    opacity: 0;
+  }
+}
+
+/* ---- responsive ---- */
+@media (max-width: 720px) {
+  .opponents {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .app {
+    padding: 8px 10px 20px;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  /* Force the brand onto its own line, and the pills onto their own line
+     below the buttons — flex-shrink alone isn't reliable here since text
+     content can hold a min-content floor and overflow instead of wrapping. */
+  .brand {
+    flex: 1 1 100%;
+    font-size: 17px;
+  }
+  .status {
+    order: 3;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+  .tile {
+    width: 38px;
+    height: 52px;
+  }
+  .tile-main {
+    font-size: 20px;
+  }
+}
+@media (max-width: 420px) {
+  .tile {
+    width: 32px;
+    height: 44px;
+  }
+  .tile-main {
+    font-size: 17px;
+  }
+  .tile-sub {
+    font-size: 8px;
+  }
+  .overlay-card {
+    padding: 24px 18px;
+  }
+}
+
+/* === MahjongCard === */
+/* Always-visible reference card (see src/components/MahjongCard.tsx). Additive
+   only — reuses existing color variables (--bam/--crak/--dot/--gold). Layout
+   and per-hand ink colors (green/red/black) mirror the source printed card
+   (src/engine/cardDisplay.ts) as closely as a dark UI reasonably allows;
+   green/red map to --bam/--crak (already the app's two "suit ink" colors),
+   black maps to a light neutral since literal black is invisible on the
+   felt background. */
+.mahjong-card {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.mahjong-card-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.mahjong-card-sections {
+  columns: 3 260px;
+  column-gap: 10px;
+}
+.mahjong-card-section {
+  break-inside: avoid;
+  margin-bottom: 8px;
+}
+.mahjong-card-section-title {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--gold);
+  opacity: 0.9;
+  padding: 3px 2px;
+  border-bottom: 1px solid rgba(232, 200, 106, 0.3);
+  margin-bottom: 3px;
+}
+.mahjong-card-hand-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.mahjong-card-hand {
+  border-radius: 5px;
+  padding: 3px 5px;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+}
+.mahjong-card-hand-winnable {
+  background: rgba(232, 200, 106, 0.18);
+  border-color: rgba(232, 200, 106, 0.55);
+}
+.mahjong-card-hand-top3 {
+  background: rgba(179, 136, 255, 0.18);
+  border-color: rgba(179, 136, 255, 0.6);
+}
+.mahjong-card-hand-close {
+  background: rgba(111, 211, 255, 0.12);
+  border-color: rgba(111, 211, 255, 0.45);
+}
+.mahjong-card-hand-viable:hover,
+.mahjong-card-hand-close:hover,
+.mahjong-card-hand-top3:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+.mahjong-card-hand-dead {
+  opacity: 0.35;
+  filter: grayscale(0.8);
+}
+.mahjong-card-hand-line {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Courier New', ui-monospace, monospace;
+  white-space: nowrap;
+}
+.mahjong-card-pattern {
+  display: flex;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mahjong-card-ink-green {
+  color: var(--bam);
+}
+.mahjong-card-ink-red {
+  color: var(--crak);
+}
+.mahjong-card-ink-black {
+  color: #d8d6ce;
+}
+.mahjong-card-fill {
+  flex: 1;
+  min-width: 6px;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.3);
+  align-self: center;
+  margin-bottom: 2px;
+}
+.mahjong-card-prefix {
+  opacity: 0.6;
+  font-size: 10px;
+}
+.mahjong-card-points {
+  opacity: 0.9;
+}
+.mahjong-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 400;
+  font-style: italic;
+  opacity: 0.7;
+  margin-top: 1px;
+  white-space: normal;
+}
+.mahjong-card-winnable-badge {
+  font-size: 10px;
+  font-weight: 700;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: var(--gold);
+  color: var(--ink);
+  padding: 1px 6px;
+  border-radius: 999px;
+  opacity: 1;
+}
+.mahjong-card-distance {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  background: rgba(111, 211, 255, 0.2);
+  padding: 1px 6px;
+  border-radius: 999px;
+  opacity: 1;
+}
+@media (max-width: 900px) {
+  .mahjong-card-sections {
+    columns: 2 220px;
+  }
+}
+@media (max-width: 600px) {
+  .mahjong-card-sections {
+    columns: 1;
+  }
+  .mahjong-card-hand-line {
+    font-size: 11px;
+  }
+}
+
+
+/* === HandRack / DiscardPile === */
+
+/* Sort-by-suit / sort-by-rank toolbar shown above the drag-to-reorder rack. */
+.rack-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+/* Wrapper div rendered by Reorder.Item around each rack tile — a flex item of
+   the (reused) .rack row, draggable along the x axis. */
+.rack-item {
+  display: flex;
+  touch-action: none;
+  cursor: grab;
+}
+.rack-item:active {
+  cursor: grabbing;
+}
+
+/* Full discard-history pile: wraps and scrolls instead of growing the page
+   indefinitely across a full game's 70+ discards. */
+.discard-pile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.discard-pile-scroll {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.discard-pile-item {
+  display: flex;
+}
+.discard-pile-item-latest .tile {
+  outline: 2px solid var(--gold);
+  box-shadow: 0 0 0 2px rgba(232, 200, 106, 0.35), 0 8px 14px var(--shadow);
+}
+
+/* === Tile hover-highlight (from hovering a hand on the card) === */
+.tile-highlighted {
+  outline: 3px solid #6fd3ff;
+  box-shadow: 0 0 0 3px rgba(111, 211, 255, 0.35), 0 8px 14px var(--shadow);
+  transform: translateY(-4px);
+}
