@@ -34,24 +34,29 @@
   --ok: #6cc28f; --ok-bg: #1d3427; --bad: #ef8a80; --bad-bg: #3b2222; --warn: #e0b44a; --warn-bg: #362d16; color-scheme: dark; }
 
 * { box-sizing: border-box; }
-body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--f-body); }
-.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 28px; }
+body { background: var(--paper); color: var(--ink); font: 14px/1.45 var(--f-body); margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 14px 40px; display: grid; gap: 14px; }
 h1, h2, h3 { font-family: var(--f-display); font-weight: 600; letter-spacing: .01em; text-wrap: balance; margin: 0; }
-h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.05; }
-h2 { font-size: 22px; }
-h3 { font-size: 17px; }
-p { margin: 0; max-width: 68ch; }
+h1 { font-size: clamp(22px, 2.6vw, 28px); line-height: 1.05; }
+h2 { font-size: 18px; }
+h3 { font-size: 15px; }
+p { margin: 0; max-width: 90ch; }
 .eyebrow { font: 500 12px/1 var(--f-data); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
 .mono { font-family: var(--f-data); font-variant-numeric: tabular-nums; }
 .muted { color: var(--ink-2); }
-header { display: grid; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 18px; }
-header .meta { display: flex; flex-wrap: wrap; gap: 6px 24px; font: 13px var(--f-data); color: var(--ink-2); }
+header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 6px 24px; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+header .eyebrow { display: block; margin-bottom: 4px; }
+.intro { font-size: 12.5px; line-height: 1.35; color: var(--ink-2); }
+header .meta { display: flex; flex-wrap: wrap; gap: 4px 20px; font: 12px var(--f-data); color: var(--ink-2); }
 
-.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px 28px; align-items: end; }
-.field { display: grid; gap: 6px; min-width: 0; }
+/* Stage: controls sidebar beside the two plans, sized to fit one screen. */
+.stage { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 760px) { .stage { grid-template-columns: 1fr; } .panel svg.plan { height: auto; } }
+.controls { display: grid; gap: 14px; align-content: start; }
+.field { display: grid; gap: 3px; min-width: 0; }
 .field label { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
 .field label output { font-family: var(--f-data); font-weight: 500; font-variant-numeric: tabular-nums; }
-.field .hint { font-size: 13px; color: var(--ink-2); }
+.field .hint { font-size: 12px; line-height: 1.3; color: var(--ink-2); }
 input[type=range] { width: 100%; accent-color: var(--couch); }
 input[type=number] { width: 100%; font: 14px var(--f-data); padding: 5px 8px; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); border-radius: 3px; }
 button { font: 600 14px var(--f-body); padding: 7px 14px; border-radius: 3px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); cursor: pointer; }
@@ -59,12 +64,12 @@ button.ghost { background: transparent; color: var(--ink); }
 button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--couch); outline-offset: 2px; }
 .check { display: flex; gap: 8px; align-items: center; font-weight: 600; }
 
-.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
 .panel { background: var(--sheet); border: 1px solid var(--rule); display: grid; grid-template-rows: auto 1fr auto; min-width: 0; }
-.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; padding: 14px 16px 10px; border-bottom: 1px solid var(--rule); }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; padding: 6px 12px; border-bottom: 1px solid var(--rule); }
 .panel-head .src { font: 12px var(--f-data); color: var(--ink-2); }
-.verdict { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--rule); align-items: center; min-height: 54px; }
-.chip { font: 600 13px/1 var(--f-body); padding: 6px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
+.verdict { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 12px; border-top: 1px solid var(--rule); align-items: center; min-height: 38px; }
+.chip { font: 600 12px/1 var(--f-body); padding: 5px 9px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
 .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .chip.ok { color: var(--ok); background: var(--ok-bg); }
 .chip.bad { color: var(--bad); background: var(--bad-bg); }
@@ -72,22 +77,24 @@ button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px 
 .chip.wait { color: var(--ink-2); background: var(--paper); }
 .verdict .note { font-size: 13px; color: var(--ink-2); flex-basis: 100%; }
 svg.plan { width: 100%; height: auto; display: block; }
+/* Plans scale to the window height so controls, both plans and playback fit on one screen. */
+.panel svg.plan { height: clamp(300px, 100vh - 170px, 720px); }
 svg text { font-family: var(--f-data); fill: var(--ink-2); }
 
-.player { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.player input { flex: 1 1 200px; }
+.player { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--rule); padding-top: 12px; }
+.player input { flex: 1 1 120px; }
 
-.summary { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.summary { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start; }
 @media (max-width: 820px) { .summary { grid-template-columns: 1fr; } }
-.chart-box { background: var(--sheet); border: 1px solid var(--rule); padding: 14px 16px; display: grid; gap: 8px; min-width: 0; }
+.chart-box { background: var(--sheet); border: 1px solid var(--rule); padding: 10px 12px; display: grid; gap: 8px; min-width: 0; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 18px; height: 0; border-top: 2.5px solid; display: inline-block; }
-.findings { display: grid; gap: 14px; }
-.findings ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+.findings { display: grid; gap: 10px; font-size: 13px; }
+.findings ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
 
 details.survey { background: var(--sheet); border: 1px solid var(--rule); }
-details.survey summary { cursor: pointer; padding: 14px 16px; font: 600 17px var(--f-display); }
+details.survey summary { cursor: pointer; padding: 10px 12px; font: 600 15px var(--f-display); }
 .survey-body { padding: 0 16px 16px; display: grid; gap: 16px; }
 .dims { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px 20px; }
 .dims .field label { font-weight: 400; font-size: 14px; }
@@ -97,13 +104,14 @@ details.survey summary { cursor: pointer; padding: 14px 16px; font: 600 17px var
 
 <div class="wrap">
   <header>
-    <span class="eyebrow">430 3rd St · shared stairwell · overhead plan</span>
-    <h1>Will the couch make the U-turn?</h1>
-    <p>Set a couch size. The simulator slides and rotates a flat rectangle up the stair run, around the banister post on the landing, and back down the hallway, in both the existing and the proposed layout. Elevation is ignored and the couch is never tilted on end.</p>
+    <div><span class="eyebrow">430 3rd St · shared stairwell · overhead plan</span>
+    <h1>Will the couch make the U-turn?</h1></div>
     <div class="meta"><span>Units: inches</span><span>Search grid: <span id="resLabel">½″ · 2°</span></span><span>Sources: hand sketch, A-001.00, DM-001.00</span></div>
   </header>
 
+  <div class="stage">
   <section class="controls" aria-label="Couch size">
+    <p class="intro">Set a couch size. The simulator slides and rotates a flat rectangle up the stair run, around the banister post, and back down the hallway in both layouts. Elevation is ignored and the couch is never tilted on end.</p>
     <div class="field">
       <label for="w">Couch width (depth) <output id="wOut"></output></label>
       <input type="range" id="w" min="10" max="32" step="0.5" value="22">
@@ -123,15 +131,16 @@ details.survey summary { cursor: pointer; padding: 14px 16px; font: 600 17px var
       <input type="range" id="clear" min="0" max="2" step="0.25" value="0">
       <span class="hint">Extra gap kept on every side of the couch</span>
     </div>
+    <div class="player" aria-label="Playback">
+      <button id="play" type="button">Play</button>
+      <label class="muted" for="scrub">Move</label>
+      <input type="range" id="scrub" min="0" max="1000" value="0">
+    </div>
   </section>
 
   <section class="panels" id="panels" aria-label="Plans"></section>
+  </div>
 
-  <section class="player" aria-label="Playback">
-    <button id="play" type="button">Play</button>
-    <label class="muted" for="scrub">Move</label>
-    <input type="range" id="scrub" min="0" max="1000" value="0">
-  </section>
 
   <section class="summary">
     <div class="chart-box">
@@ -144,7 +153,7 @@ details.survey summary { cursor: pointer; padding: 14px 16px; font: 600 17px var
         <span><i style="border-color:var(--couch)"></i>Proposed</span>
         <span><i style="border-color:var(--entry);border-top-style:dashed"></i>Existing, entry open (only where it differs)</span>
       </div>
-      <div style="overflow-x:auto"><svg id="chart" class="plan" viewBox="0 0 620 340" role="img" aria-label="Maximum couch length versus width"></svg></div>
+      <div style="overflow-x:auto"><svg id="chart" class="plan" viewBox="0 0 620 300" role="img" aria-label="Maximum couch length versus width"></svg></div>
       <p class="muted" id="chartNote" style="font-size:13px"></p>
     </div>
     <div class="findings">
@@ -542,7 +551,7 @@ function renderVerdicts() {
 // ---------- chart ----------
 function drawChart() {
   const svg = $('chart'); svg.innerHTML = '';
-  const m = { l: 46, r: 14, t: 12, b: 36 }, Wd = 620, Ht = 340;
+  const m = { l: 46, r: 14, t: 12, b: 36 }, Wd = 620, Ht = 300;
   const ws = sweep.widths, wMin = ws[0], wMax = ws[ws.length - 1];
   const lMax = Math.ceil(Math.max(100, 3 * wMax) / 10) * 10;
   const X = (w) => m.l + (w - wMin) / (wMax - wMin) * (Wd - m.l - m.r);
